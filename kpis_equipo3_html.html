@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de KPIs</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .dashboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .kpi-card {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .chart-container {
+            height: 300px;
+            margin: 15px 0;
+        }
+        .formula-box {
+            background: #f8f9fa;
+            padding: 12px;
+            border-left: 4px solid #3498db;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+        .interpretation {
+            background: #fffaf0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        select {
+            padding: 8px;
+            margin: 10px 0;
+            width: 100%;
+        }
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Dashboard de KPIs - Equipo 3</h1>
+    
+    <div class="dashboard-container">
+        <!-- KPI 1: Incremento en Alcance -->
+        <div class="kpi-card">
+            <h2>KPI 1: Incremento en Alcance</h2>
+            
+            <div class="formula-box">
+                <strong>Fórmulas:</strong><br>
+                1. Diferencia de Alcance = Alcance con Publicidad − Alcance Sin Publicidad<br>
+                2. Porcentaje de Incremento = (Diferencia de Alcance / Alcance sin Publicidad) × 100
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="kpi1Chart"></canvas>
+            </div>
+            
+            <div class="interpretation">
+                <strong>Interpretación:</strong><br>
+                El alcance incrementó un <strong>686% en Facebook</strong> y <strong>338% en Instagram</strong> durante el periodo de publicidad pagada respecto al periodo orgánico. 
+                Estos resultados superan ampliamente el objetivo del 20% esperado, demostrando la efectividad de las campañas pagadas. 
+                Sin embargo, cabe mencionar que el periodo de publicidad pagada fue corto (solo 5 días), lo que puede afectar la representatividad de los datos.
+            </div>
+            
+            <h3>Variables Utilizadas</h3>
+            <table>
+                <tr>
+                    <th>Variable</th>
+                    <th>Descripción</th>
+                </tr>
+                <tr>
+                    <td>Periodo</td>
+                    <td>Pre-Publicidad (09/09-21/10), Durante Publicidad (22/10-27/10), Post-Publicidad (28/10-15/11)</td>
+                </tr>
+                <tr>
+                    <td>Red de alcance</td>
+                    <td>Facebook o Instagram</td>
+                </tr>
+                <tr>
+                    <td>Cantidad</td>
+                    <td>Alcance diario por publicación</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- KPI 2: Comparación de Ventas -->
+        <div class="kpi-card">
+            <h2>KPI 2: Comparación de Ventas</h2>
+            
+            <div class="formula-box">
+                <strong>Fórmulas:</strong><br>
+                1. % Cambio = [(Ventas posteriores con publicidad - Ventas previas con publicidad) / Ventas previas sin publicidad] × 100<br>
+                2. % Participación = (Ventas con publicidad / Total ventas) × 100
+            </div>
+            
+            <select id="chartSelector">
+                <option value="comparison">Comparación Pre/Post Publicidad</option>
+                <option value="total">Total Ventas Con/Sin Publicidad</option>
+            </select>
+            
+            <div class="chart-container">
+                <canvas id="kpi2Chart"></canvas>
+            </div>
+            
+            <div class="interpretation" id="kpi2Interpretation">
+                <strong>Interpretación (Comparación):</strong><br>
+                Las ventas con publicidad pagada <strong>aumentaron un 100%</strong> después de la campaña (de 45 a 90 ventas), mientras que las ventas orgánicas se mantuvieron estables (135 ventas). 
+                Esto indica que la publicidad tuvo un impacto directo en el incremento de ventas, aunque el volumen absoluto sigue siendo mayor en el canal orgánico.
+            </div>
+            
+            <h3>Variables Utilizadas</h3>
+            <table>
+                <tr>
+                    <th>Variable</th>
+                    <th>Descripción</th>
+                </tr>
+                <tr>
+                    <td>Ventas previas</td>
+                    <td>Antes del 22/10/2024</td>
+                </tr>
+                <tr>
+                    <td>Ventas posteriores</td>
+                    <td>Del 22/10/2024 en adelante</td>
+                </tr>
+                <tr>
+                    <td>Publicidad</td>
+                    <td>Identificación de ventas generadas por campañas pagadas</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- KPI 3: Costo por Conversión -->
+        <div class="kpi-card">
+            <h2>KPI 3: Costo por Conversión</h2>
+            
+            <div class="formula-box">
+                <strong>Fórmulas:</strong><br>
+                1. CPC con publicidad = Costo total campaña / Conversiones generadas<br>
+                2. CPC sin publicidad = (Costo unitario × Unidades vendidas) / Ventas orgánicas
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="kpi3Chart"></canvas>
+            </div>
+            
+            <div class="interpretation">
+                <strong>Interpretación:</strong><br>
+                El Costo por Conversión (CPC) con publicidad (<strong>$50</strong>) es significativamente mayor que el CPC orgánico (<strong>$15</strong>). 
+                Esto sugiere que la campaña publicitaria no fue eficiente en términos de retorno de inversión. 
+                Se recomienda optimizar los anuncios, mejorar el targeting o reconsiderar los canales utilizados para reducir este costo.
+            </div>
+            
+            <h3>Variables Utilizadas</h3>
+            <table>
+                <tr>
+                    <th>Variable</th>
+                    <th>Descripción</th>
+                </tr>
+                <tr>
+                    <td>Costo campaña</td>
+                    <td>Inversión total en publicidad ($200)</td>
+                </tr>
+                <tr>
+                    <td>Conversiones</td>
+                    <td>Ventas atribuibles a publicidad (4)</td>
+                </tr>
+                <tr>
+                    <td>Costo unitario</td>
+                    <td>Costo promedio por producto ($15)</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Datos reales calculados
+        const datos = {
+            alcance: {
+                facebook: { pre: 42.3, durante: 332.5, post: 45.8 },
+                instagram: { pre: 28.6, durante: 125.3, post: 25.4 }
+            },
+            ventas: {
+                previasCon: 45,
+                previasSin: 135,
+                posterioresCon: 90,
+                posterioresSin: 135
+            },
+            cpc: { con: 50, sin: 15 }
+        };
+
+        // KPI 1: Incremento en Alcance
+        const ctx1 = document.getElementById('kpi1Chart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['Facebook', 'Instagram'],
+                datasets: [{
+                    label: 'Incremento %',
+                    data: [
+                        ((datos.alcance.facebook.durante - datos.alcance.facebook.pre) / datos.alcance.facebook.pre * 100).toFixed(0),
+                        ((datos.alcance.instagram.durante - datos.alcance.instagram.pre) / datos.alcance.instagram.pre * 100).toFixed(0)
+                    ],
+                    backgroundColor: ['#36a2eb', '#ff6384'],
+                    borderColor: ['#36a2eb', '#ff6384'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Porcentaje de Incremento' }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // KPI 2: Comparación de Ventas
+        const ctx2 = document.getElementById('kpi2Chart').getContext('2d');
+        let ventasChart = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['Previas', 'Posteriores'],
+                datasets: [
+                    {
+                        label: 'Con Publicidad',
+                        data: [datos.ventas.previasCon, datos.ventas.posterioresCon],
+                        backgroundColor: '#ff9f40'
+                    },
+                    {
+                        label: 'Sin Publicidad',
+                        data: [datos.ventas.previasSin, datos.ventas.posterioresSin],
+                        backgroundColor: '#4bc0c0'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Selector para cambiar vista de KPI 2
+        document.getElementById('chartSelector').addEventListener('change', function() {
+            const interpretation = document.getElementById('kpi2Interpretation');
+            
+            if (this.value === 'total') {
+                ventasChart.data.labels = ['Con Publicidad', 'Sin Publicidad'];
+                ventasChart.data.datasets = [{
+                    label: 'Total Ventas',
+                    data: [
+                        datos.ventas.previasCon + datos.ventas.posterioresCon,
+                        datos.ventas.previasSin + datos.ventas.posterioresSin
+                    ],
+                    backgroundColor: ['#9966ff', '#36a2eb']
+                }];
+                interpretation.innerHTML = `
+                    <strong>Interpretación (Total):</strong><br>
+                    Las ventas con publicidad representan el <strong>33% del total</strong> (135 de 405 ventas), 
+                    mientras que las ventas orgánicas constituyen el 67% restante. 
+                    Aunque la publicidad contribuyó significativamente, el canal orgánico sigue siendo la principal fuente de ventas, 
+                    lo que sugiere que ambos canales son importantes para la estrategia comercial.
+                `;
+            } else {
+                ventasChart.data.labels = ['Previas', 'Posteriores'];
+                ventasChart.data.datasets = [
+                    {
+                        label: 'Con Publicidad',
+                        data: [datos.ventas.previasCon, datos.ventas.posterioresCon],
+                        backgroundColor: '#ff9f40'
+                    },
+                    {
+                        label: 'Sin Publicidad',
+                        data: [datos.ventas.previasSin, datos.ventas.posterioresSin],
+                        backgroundColor: '#4bc0c0'
+                    }
+                ];
+                interpretation.innerHTML = `
+                    <strong>Interpretación (Comparación):</strong><br>
+                    Las ventas con publicidad pagada <strong>aumentaron un 100%</strong> después de la campaña (de 45 a 90 ventas), 
+                    mientras que las ventas orgánicas se mantuvieron estables (135 ventas). 
+                    Esto indica que la publicidad tuvo un impacto directo en el incremento de ventas, 
+                    aunque el volumen absoluto sigue siendo mayor en el canal orgánico.
+                `;
+            }
+            ventasChart.update();
+        });
+
+        // KPI 3: Costo por Conversión
+        const ctx3 = document.getElementById('kpi3Chart').getContext('2d');
+        new Chart(ctx3, {
+            type: 'bar',
+            data: {
+                labels: ['Con Publicidad', 'Sin Publicidad'],
+                datasets: [{
+                    label: 'Costo por Conversión ($)',
+                    data: [datos.cpc.con, datos.cpc.sin],
+                    backgroundColor: ['#ff6384', '#36a2eb'],
+                    borderColor: ['#ff6384', '#36a2eb'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        title: { display: true, text: 'Costo ($)' }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: $${context.raw}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Publicidad</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #0e1117;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            margin-bottom: 1.5rem;
+            color: #0e1117;
+            font-size: 1.8rem;
+        }
+        
+        p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 450px;
+            width: 100%;
+            margin: 30px 0;
+            padding: 15px;
+        }
+        
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.2rem;
+            flex: 1;
+            min-width: 220px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            color: #333;
+        }
+        
+        .stat-card p {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #ff4b4b;
+            margin: 0.5rem 0;
+        }
+        
+        footer {
+            background-color: #0e1117;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+            
+            .stat-card {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Dashboard de Análisis de Publicidad</h1>
+    </header>
+    
+    <main>
+        <section>
+            <h1>Análisis de Alcance por Periodo y Red</h1>
+            <p>Resultados del análisis de campañas publicitarias en diferentes redes sociales.</p>
+            
+            <div class="stats-container" id="stats-container">
+                <!-- Las estadísticas se cargarán aquí -->
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="chart"></canvas>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>© 2025 Dashboard de Análisis de Publicidad</p>
+    </footer>
+
+    <script>
+        // Variables globales
+        let chart;
+        const ordenPeriodos = ['Pre-Publicidad', 'Durante Publicidad', 'Post-Publicidad'];
+        
+        // Datos completos del CSV
+        const datosIncrustados = [
+            {"Periodo":"Durante Publicidad","Red de alcance":"Facebook","Cantidad":149},
+            {"Periodo":"Durante Publicidad","Red de alcance":"Instagram","Cantidad":100},
+            {"Periodo":"Durante Publicidad","Red de alcance":"Facebook","Cantidad":247},
+            {"Periodo":"Durante Publicidad","Red de alcance":"Instagram","Cantidad":130},
+            {"Periodo":"Durante Publicidad","Red de alcance":"Facebook","Cantidad":455},
+            {"Periodo":"Durante Publicidad","Red de alcance":"Instagram","Cantidad":418},
+            {"Periodo":"Post-Publicidad","Red de alcance":"Facebook","Cantidad":8},
+            {"Periodo":"Post-Publicidad","Red de alcance":"Instagram","Cantidad":3},
+            {"Periodo":"Pre-Publicidad","Red de alcance":"Facebook","Cantidad":36},
+            {"Periodo":"Pre-Publicidad","Red de alcance":"Instagram","Cantidad":90},
+            {"Periodo":"Pre-Publicidad","Red de alcance":"Facebook","Cantidad":104},
+            {"Periodo":"Pre-Publicidad","Red de alcance":"Instagram","Cantidad":237},
+            {"Periodo":"Pre-Publicidad","Red de alcance":"Facebook","Cantidad":285},
+            {"Periodo":"Pre-Publicidad","Red de alcance":"Instagram","Cantidad":214},
+            {"Periodo":"Pre-Publicidad","Red de alcance":"Facebook","Cantidad":31},
+            {"Periodo":"Pre-Publicidad","Red de alcance":"Instagram","Cantidad":5}
+            // Puedes agregar aquí el resto de tus datos del CSV
+        ];
+
+        // Procesar los datos cuando se carga la página
+        window.addEventListener('DOMContentLoaded', function() {
+            procesarDatos(datosIncrustados);
+        });
+
+        function procesarDatos(data) {
+            // Agrupar por Periodo y Red de alcance y calcular promedios
+            const dataFrame = agruparYCalcularPromedios(data);
+            
+            // Ordenar por periodos
+            const dataOrdenada = ordenarPorPeriodos(dataFrame, ordenPeriodos);
+            
+            // Calcular porcentajes de aumento
+            const comparacion = calcularPorcentajeAumento(dataOrdenada);
+            
+            // Actualizar estadísticas
+            actualizarEstadisticas(comparacion);
+            
+            // Crear el gráfico
+            crearGrafico(dataOrdenada, comparacion);
+        }
+        
+        function agruparYCalcularPromedios(data) {
+            const sumas = {};
+            const conteos = {};
+            
+            data.forEach(row => {
+                const key = `${row['Periodo']}_${row['Red de alcance']}`;
+                
+                if (!sumas[key]) {
+                    sumas[key] = 0;
+                    conteos[key] = 0;
+                }
+                
+                sumas[key] += row['Cantidad'];
+                conteos[key] += 1;
+            });
+            
+            const resultado = [];
+            for (const key in sumas) {
+                const [periodo, red] = key.split('_');
+                resultado.push({
+                    'Periodo': periodo,
+                    'Red de alcance': red,
+                    'Promedio Alcance': sumas[key] / conteos[key]
+                });
+            }
+            
+            return resultado;
+        }
+        
+        function ordenarPorPeriodos(data, ordenPeriodos) {
+            return data.sort((a, b) => {
+                return ordenPeriodos.indexOf(a.Periodo) - ordenPeriodos.indexOf(b.Periodo);
+            });
+        }
+        
+        function calcularPorcentajeAumento(data) {
+            const prePub = data.filter(row => row.Periodo === 'Pre-Publicidad');
+            const durantePub = data.filter(row => row.Periodo === 'Durante Publicidad');
+            
+            const comparacion = [];
+            
+            prePub.forEach(rowPre => {
+                const rowDurante = durantePub.find(r => r['Red de alcance'] === rowPre['Red de alcance']);
+                
+                if (rowDurante) {
+                    const porcentajeAumento = ((rowDurante['Promedio Alcance'] - rowPre['Promedio Alcance']) / 
+                                            rowPre['Promedio Alcance']) * 100;
+                    
+                    comparacion.push({
+                        'Red de alcance': rowPre['Red de alcance'],
+                        'Promedio Alcance_Pre': rowPre['Promedio Alcance'],
+                        'Promedio Alcance_Durante': rowDurante['Promedio Alcance'],
+                        'Porcentaje Aumento (%)': porcentajeAumento
+                    });
+                }
+            });
+            
+            return comparacion;
+        }
+        
+        function actualizarEstadisticas(comparacion) {
+            const statsContainer = document.getElementById('stats-container');
+            statsContainer.innerHTML = '';
+            
+            comparacion.forEach(item => {
+                const statCard = document.createElement('div');
+                statCard.className = 'stat-card';
+                
+                statCard.innerHTML = `
+                    <h3>${item['Red de alcance']}</h3>
+                    <p>Pre: ${item['Promedio Alcance_Pre'].toFixed(2)}</p>
+                    <p>Durante: ${item['Promedio Alcance_Durante'].toFixed(2)}</p>
+                    <p style="color: ${item['Porcentaje Aumento (%)'] > 0 ? '#28a745' : '#dc3545'}">
+                        ${item['Porcentaje Aumento (%)'] > 0 ? '↑' : '↓'} ${Math.abs(item['Porcentaje Aumento (%)']).toFixed(1)}%
+                    </p>
+                `;
+                
+                statsContainer.appendChild(statCard);
+            });
+        }
+        
+        function crearGrafico(data, comparacion) {
+            const ctx = document.getElementById('chart').getContext('2d');
+            
+            if (chart) {
+                chart.destroy();
+            }
+            
+            const periodos = [...new Set(data.map(item => item.Periodo))];
+            const redes = [...new Set(data.map(item => item['Red de alcance']))];
+            
+            // Calcular el valor máximo con un 15% de margen
+            const valores = data.map(item => item['Promedio Alcance']);
+            const maxValue = Math.max(...valores) * 1.15;
+            
+            const datasets = redes.map((red, index) => {
+                const color = getColorForIndex(index);
+                const redData = periodos.map(periodo => {
+                    const item = data.find(d => d.Periodo === periodo && d['Red de alcance'] === red);
+                    return item ? item['Promedio Alcance'] : 0;
+                });
+                
+                return {
+                    label: red,
+                    data: redData,
+                    backgroundColor: color,
+                    borderColor: color,
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barPercentage: 0.7,
+                    categoryPercentage: 0.8
+                };
+            });
+            
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: periodos,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: maxValue,
+                            grace: '10%',
+                            title: {
+                                display: true,
+                                text: 'Alcance Promedio',
+                                font: {
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                padding: 10,
+                                callback: function(value) {
+                                    return value.toLocaleString();
+                                }
+                            },
+                            grid: {
+                                drawTicks: false
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Periodo de la Campaña',
+                                font: {
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                autoSkip: false
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                padding: 20,
+                                boxWidth: 20,
+                                font: {
+                                    size: 12
+                                },
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.raw.toLocaleString();
+                                    return label;
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Comparación de Alcance por Red Social',
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 20
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 20,
+                            right: 15,
+                            bottom: 15,
+                            left: 15
+                        }
+                    }
+                }
+            });
+        }
+        
+        function getColorForIndex(index) {
+            const colors = [
+                'rgba(54, 162, 235, 0.8)',
+                'rgba(255, 99, 132, 0.8)',
+                'rgba(75, 192, 192, 0.8)',
+                'rgba(255, 159, 64, 0.8)',
+                'rgba(153, 102, 255, 0.8)',
+                'rgba(255, 206, 86, 0.8)'
+            ];
+            return colors[index % colors.length];
+        }
+    </script>
+</body>
+</html>
