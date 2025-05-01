@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard KPIs Equipo 1</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.16.1/plotly.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f6;
+            color: #262730;
+        }
+        
+        header {
+            background-color: #0e1117;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        
+        .columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .column {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 5px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1, h2, h3 {
+            color: #0e1117;
+            margin-bottom: 0.5rem;
+        }
+        
+        h3 {
+            font-size: 1.2rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 400px;
+        }
+        
+        select {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        hr {
+            margin: 2rem 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+        
+        .expander {
+            margin-top: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .expander-header {
+            background-color: #f8f9fa;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .expander-content {
+            padding: 1rem;
+            display: none;
+        }
+        
+        .expander.active .expander-content {
+            display: block;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        
+        th, td {
+            text-align: left;
+            padding: 0.5rem;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+        }
+        
+        footer {
+            background-color: #0e1117;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Dashboard KPIs Equipo 1</h1>
+    </header>
+    
+    <main>
+        <div class="columns">
+            <section class="column">
+                <h3>Crecimiento de Seguidores</h3>
+                <p><em>(Seguidores actuales / deseados) * 100</em></p>
+                
+                <div id="selector-crecimiento">
+                    <select id="red-social-select">
+                        <option value="">Selecciona una red social</option>
+                    </select>
+                </div>
+                
+                <div class="chart-container" id="chart-crecimiento"></div>
+            </section>
+            
+            <section class="column">
+                <h3>Engagement Rate</h3>
+                <p><em>(Total interacciones / alcance) * 100</em></p>
+                <div class="chart-container" id="chart-engagement"></div>
+            </section>
+            
+            <section class="column">
+                <h3>Frecuencia de Publicaciones</h3>
+                <p><em>(Publicaciones realizadas / planeadas) * 100</em></p>
+                <div class="chart-container" id="chart-frecuencia"></div>
+            </section>
+        </div>
+        
+        <hr>
+        
+        <div class="columns">
+            <section class="column">
+                <div class="expander" id="expander-crecimiento">
+                    <div class="expander-header">Interpretación Crecimiento</div>
+                    <div class="expander-content">
+                        <ul>
+                            <li><strong>0-50%:</strong> Aún falta para alcanzar la meta</li>
+                            <li><strong>51-59%:</strong> A mitad de la meta</li>
+                            <li><strong>60-99%:</strong> Cerca de alcanzar la meta</li>
+                            <li><strong>100%+:</strong> Meta lograda</li>
+                        </ul>
+                        
+                        <p><strong>Significado de las variables:</strong></p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Variable</th>
+                                    <th>Significado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Seguidores actuales</td>
+                                    <td>Cantidad de seguidores que se han tenido por mes.</td>
+                                </tr>
+                                <tr>
+                                    <td>Seguidores deseados</td>
+                                    <td>Cantidad de seguidores que buscas tener al finalizar un periodo de tiempo.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="column">
+                <div class="expander" id="expander-engagement">
+                    <div class="expander-header">Interpretación Engagement</div>
+                    <div class="expander-content">
+                        <ul>
+                            <li><strong>0-33%:</strong> Nivel bajo de interacción</li>
+                            <li><strong>34-66%:</strong> Nivel moderado de interacción</li>
+                            <li><strong>67%+:</strong> Nivel alto de interacción</li>
+                        </ul>
+                        
+                        <p><strong>Significado de las variables:</strong></p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Variable</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Total interacciones</td>
+                                    <td>Número total de interacciones (likes + comentarios + compartidos) en el conjunto de publicaciones por mes.</td>
+                                </tr>
+                                <tr>
+                                    <td>Alcance</td>
+                                    <td>Número de personas que han visto el contenido.</td>
+                                </tr>
+                                <tr>
+                                    <td>Engagement Rate</td>
+                                    <td>Métrica que mide la interacción de los usuarios con el contenido, expresada como un porcentaje.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="column">
+                <div class="expander" id="expander-frecuencia">
+                    <div class="expander-header">Interpretación Frecuencia</div>
+                    <div class="expander-content">
+                        <ul>
+                            <li><strong>100%+:</strong> Calendario cumplido o superado</li>
+                            <li><strong>&lt;100%:</strong> No se alcanzó el objetivo</li>
+                        </ul>
+                        
+                        <p><strong>Significado de las variables:</strong></p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Variables de la formula</th>
+                                    <th>Significado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Publicaciones realizadas</td>
+                                    <td>Número de publicaciones realizadas en una red social.</td>
+                                </tr>
+                                <tr>
+                                    <td>Publicaciones planeadas</td>
+                                    <td>Número de publicaciones planificadas en el calendario.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <footer>
+        <p>© 2025 Dashboard KPIs Equipo 1</p>
+    </footer>
+
+    <script>
+        // Configurar los expandibles
+        document.querySelectorAll('.expander-header').forEach(header => {
+            header.addEventListener('click', function() {
+                this.parentElement.classList.toggle('active');
+            });
+        });
+
+        // Datos incrustados directamente
+        const dfCrecimiento = [
+            {Red_Social: "Instagram", Periodo_sept: 49, Periodo_oct: 98, Periodo_nov: 96, Seguidores_deseados: 150},
+            {Red_Social: "Facebook", Periodo_sept: 62, Periodo_oct: 96, Periodo_nov: 90, Seguidores_deseados: 100}
+        ];
+
+        const dfEngagement = [
+            {TIPO: "LIKES_FB", SEPTIEMBRE: 79, OCTUBRE: 71, NOVIEMBRE: 33},
+            {TIPO: "COMENTARIOS_FB", SEPTIEMBRE: 0, OCTUBRE: 2, NOVIEMBRE: 0},
+            {TIPO: "COMPARTIDOS_FB", SEPTIEMBRE: 14, OCTUBRE: 22, NOVIEMBRE: 7},
+            {TIPO: "TOTAL_INTERACCIONES_FB", SEPTIEMBRE: 93, OCTUBRE: 95, NOVIEMBRE: 40},
+            {TIPO: "ALCANCE_FB", SEPTIEMBRE: 710, OCTUBRE: 4096, NOVIEMBRE: 611},
+            {TIPO: "RESULTADO_FB", SEPTIEMBRE: "13.10%", OCTUBRE: "2.32%", NOVIEMBRE: "6.55%"},
+            {TIPO: "LIKES_IG", SEPTIEMBRE: 26, OCTUBRE: 54, NOVIEMBRE: 56},
+            {TIPO: "COMENTARIOS_IG", SEPTIEMBRE: 0, OCTUBRE: 3, NOVIEMBRE: 1},
+            {TIPO: "COMPARTIDOS_IG", SEPTIEMBRE: 4, OCTUBRE: 1, NOVIEMBRE: 2},
+            {TIPO: "TOTAL_INTERACCIONES_IG", SEPTIEMBRE: 30, OCTUBRE: 58, NOVIEMBRE: 59},
+            {TIPO: "ALCANCE_IG", SEPTIEMBRE: 213, OCTUBRE: 80, NOVIEMBRE: 244},
+            {TIPO: "RESULTADO_IG", SEPTIEMBRE: "14.08%", OCTUBRE: "72.50%", NOVIEMBRE: "24.18%"},
+            {TIPO: "LIKES_TT", SEPTIEMBRE: 7, OCTUBRE: 86, NOVIEMBRE: 27},
+            {TIPO: "COMENTARIOS_TT", SEPTIEMBRE: 0, OCTUBRE: 1, NOVIEMBRE: 1},
+            {TIPO: "COMPARTIDOS_TT", SEPTIEMBRE: 0, OCTUBRE: 2, NOVIEMBRE: 0},
+            {TIPO: "TOTAL_INTERACCIONES_TT", SEPTIEMBRE: 7, OCTUBRE: 89, NOVIEMBRE: 28},
+            {TIPO: "ALCANCE_TT", SEPTIEMBRE: 693, OCTUBRE: 2367, NOVIEMBRE: 1672},
+            {TIPO: "RESULTADO_TT", SEPTIEMBRE: "1.01%", OCTUBRE: "3.76%", NOVIEMBRE: "1.67%"}
+        ];
+
+        const dfFrecuencia = [
+            {Mes: "Octubre", "Red Social": "Instagram", "Publicaciones Planeadas": 6, "Publicaciones Realizadas": 3},
+            {Mes: "Octubre", "Red Social": "Facebook", "Publicaciones Planeadas": 6, "Publicaciones Realizadas": 7},
+            {Mes: "Noviembre", "Red Social": "Instagram", "Publicaciones Planeadas": 5, "Publicaciones Realizadas": 4},
+            {Mes: "Noviembre", "Red Social": "Facebook", "Publicaciones Planeadas": 5, "Publicaciones Realizadas": 5}
+        ];
+
+        // Procesar los datos al cargar la página
+        window.addEventListener('DOMContentLoaded', function() {
+            procesarDatos();
+        });
+
+        function procesarDatos() {
+            procesarCrecimiento();
+            procesarEngagement();
+            procesarFrecuencia();
+        }
+        
+        // Procesar datos de crecimiento
+        function procesarCrecimiento() {
+            // Calcular tasas de crecimiento
+            dfCrecimiento.forEach(row => {
+                row.Crecimiento_sept = (row.Periodo_sept / row.Seguidores_deseados) * 100;
+                row.Crecimiento_oct = (row.Periodo_oct / row.Seguidores_deseados) * 100;
+                row.Crecimiento_nov = (row.Periodo_nov / row.Seguidores_deseados) * 100;
+            });
+            
+            // Transformar los datos para plotly (melt)
+            const dfMelted = [];
+            dfCrecimiento.forEach(row => {
+                ['Crecimiento_sept', 'Crecimiento_oct', 'Crecimiento_nov'].forEach(periodo => {
+                    dfMelted.push({
+                        Red_Social: row.Red_Social,
+                        Periodo: periodo,
+                        Tasa_de_Crecimiento: row[periodo]
+                    });
+                });
+            });
+            
+            // Llenar el selector de redes sociales
+            const selectRedSocial = document.getElementById('red-social-select');
+            selectRedSocial.innerHTML = '<option value="">Selecciona una red social</option>';
+            
+            const redesSociales = [...new Set(dfCrecimiento.map(row => row.Red_Social))];
+            redesSociales.forEach(red => {
+                const option = document.createElement('option');
+                option.value = red;
+                option.textContent = red;
+                selectRedSocial.appendChild(option);
+            });
+            
+            // Evento de cambio en la selección de red social
+            selectRedSocial.addEventListener('change', function() {
+                const redSocial = this.value;
+                if (redSocial) {
+                    const filtro = dfMelted.filter(row => row.Red_Social === redSocial);
+                    
+                    // Renombrar períodos para mejor visualización
+                    filtro.forEach(row => {
+                        if (row.Periodo === 'Crecimiento_sept') row.Periodo = 'Septiembre';
+                        if (row.Periodo === 'Crecimiento_oct') row.Periodo = 'Octubre';
+                        if (row.Periodo === 'Crecimiento_nov') row.Periodo = 'Noviembre';
+                    });
+                    
+                    // Crear gráfico de barras
+                    const trace1 = {
+                        x: filtro.map(row => row.Periodo),
+                        y: filtro.map(row => row.Tasa_de_Crecimiento),
+                        type: 'bar',
+                        text: filtro.map(row => row.Tasa_de_Crecimiento.toFixed(1) + '%'),
+                        textposition: 'auto',
+                        hoverinfo: 'y+text',
+                        marker: {
+                            color: ['rgba(55, 83, 109, 0.7)', 'rgba(26, 118, 255, 0.7)', 'rgba(15, 173, 255, 0.7)']
+                        }
+                    };
+                    
+                    const trace2 = {
+                        x: filtro.map(row => row.Periodo),
+                        y: [100, 100, 100],
+                        type: 'scatter',
+                        mode: 'lines',
+                        name: 'Meta (100%)',
+                        line: {
+                            color: 'red',
+                            dash: 'dash'
+                        }
+                    };
+                    
+                    const layout = {
+                        title: `Crecimiento en ${redSocial}`,
+                        yaxis: {
+                            title: '%'
+                        },
+                        height: 400,
+                        showlegend: true
+                    };
+                    
+                    Plotly.newPlot('chart-crecimiento', [trace1, trace2], layout);
+                }
+            });
+            
+            // Seleccionar la primera red social por defecto
+            if (redesSociales.length > 0) {
+                selectRedSocial.value = redesSociales[0];
+                selectRedSocial.dispatchEvent(new Event('change'));
+            }
+        }
+        
+        // Procesar datos de engagement
+        function procesarEngagement() {
+            // Filtrar los resultados
+            const engagementFiltered = dfEngagement.filter(row => 
+                row.TIPO === 'RESULTADO_FB' || 
+                row.TIPO === 'RESULTADO_IG' || 
+                row.TIPO === 'RESULTADO_TT'
+            );
+            
+            // Transformar los datos (melt)
+            const engagementLong = [];
+            engagementFiltered.forEach(row => {
+                ['SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE'].forEach(mes => {
+                    // Convertir el porcentaje a número
+                    const valor = parseFloat(row[mes].replace('%', ''));
+                    engagementLong.push({
+                        TIPO: row.TIPO === 'RESULTADO_FB' ? 'Facebook' : 
+                              row.TIPO === 'RESULTADO_IG' ? 'Instagram' : 'TikTok',
+                        Mes: mes,
+                        'Engagement Rate': valor
+                    });
+                });
+            });
+            
+            // Crear gráfico de líneas
+            const traces = [];
+            const redesSociales = [...new Set(engagementLong.map(row => row.TIPO))];
+            
+            const colors = {
+                'Facebook': 'rgb(59, 89, 152)',
+                'Instagram': 'rgb(225, 48, 108)',
+                'TikTok': 'rgb(0, 0, 0)'
+            };
+            
+            redesSociales.forEach(red => {
+                const datos = engagementLong.filter(row => row.TIPO === red);
+                
+                traces.push({
+                    x: datos.map(row => row.Mes),
+                    y: datos.map(row => row['Engagement Rate']),
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    name: red,
+                    line: {
+                        color: colors[red],
+                        width: 2
+                    },
+                    marker: {
+                        size: 8,
+                        color: colors[red]
+                    }
+                });
+            });
+            
+            const layout = {
+                title: 'Engagement por Red Social',
+                height: 400,
+                yaxis: {
+                    title: 'Engagement Rate (%)'
+                }
+            };
+            
+            Plotly.newPlot('chart-engagement', traces, layout);
+        }
+        
+        // Procesar datos de frecuencia
+        function procesarFrecuencia() {
+            // Calcular KPI de frecuencia
+            dfFrecuencia.forEach(row => {
+                row['KPI_Frecuencia (%)'] = (row['Publicaciones Realizadas'] / row['Publicaciones Planeadas']) * 100;
+            });
+            
+            // Agrupar datos por red social
+            const traces = [];
+            const redesSociales = [...new Set(dfFrecuencia.map(row => row['Red Social']))];
+            
+            const colors = {
+                'Instagram': 'rgba(225, 48, 108, 0.7)',
+                'Facebook': 'rgba(59, 89, 152, 0.7)'
+            };
+            
+            redesSociales.forEach(red => {
+                const datos = dfFrecuencia.filter(row => row['Red Social'] === red);
+                
+                traces.push({
+                    x: datos.map(row => row.Mes),
+                    y: datos.map(row => row['KPI_Frecuencia (%)']),
+                    type: 'bar',
+                    name: red,
+                    marker: {
+                        color: colors[red]
+                    }
+                });
+            });
+            
+            const layout = {
+                title: 'Frecuencia de Publicación',
+                barmode: 'group',
+                height: 400,
+                yaxis: {
+                    title: 'KPI Frecuencia (%)',
+                    range: [0, 120] // Asegurar espacio para la línea de meta
+                },
+                shapes: [{
+                    type: 'line',
+                    x0: -0.5,
+                    y0: 100,
+                    x1: 1.5,
+                    y1: 100,
+                    line: {
+                        color: 'red',
+                        width: 2,
+                        dash: 'dash'
+                    }
+                }],
+                annotations: [{
+                    x: 1.5,
+                    y: 100,
+                    xref: 'x',
+                    yref: 'y',
+                    text: 'Meta',
+                    showarrow: false,
+                    xanchor: 'left'
+                }]
+            };
+            
+            Plotly.newPlot('chart-frecuencia', traces, layout);
+        }
+    </script>
+</body>
+</html>

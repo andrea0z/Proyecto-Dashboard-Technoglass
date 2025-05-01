@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Technoglass</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background-color: #f5f5f5;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: #1a1a1a;
+            color: white;
+            height: 100vh;
+            padding: 20px 0;
+        }
+        
+        .sidebar h2 {
+            text-align: center;
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+        
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .sidebar li {
+            padding: 5px 20px;
+            margin: 5px 0;
+        }
+        
+        .sidebar li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .sidebar li a:hover, .sidebar li a.active {
+            background-color: #0275d8;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+        
+        .header-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .header-card h1 {
+            margin: 0;
+            color: #333;
+        }
+        
+        .main-card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .main-card h2 {
+            color: #333;
+            border-bottom: 2px solid #0275d8;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        
+        .objetivo {
+            margin-bottom: 30px;
+        }
+        
+        .objetivo h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .objetivo p {
+            margin-top: 5px;
+            line-height: 1.5;
+            color: #555;
+        }
+        
+        .desarrollado {
+            font-style: italic;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Menú de Navegación</h2>
+        <ul>
+            <li><a href="/" class="active">Página Principal</a></li>
+            <li><a href="/kpis_equipo1_html.html">KPIs del Objetivo 1</a></li>
+            <li><a href="/kpis_equipo2_html.html">KPIs del Objetivo 2</a></li>
+            <li><a href="/kpis_equipo3_html.html">KPIs del Objetivo 3</a></li>
+            <li><a href="/kpis_equipo4_html.html">KPIs del Objetivo 4</a></li>
+            <li><a href="/analisis_publicidad_html.html">Análisis de Publicidad</a></li>
+        </ul>
+    </div>
+    
+    <div class="content">
+        <div class="header-card">
+            <h1>Dashboard Technoglass</h1>
+        </div>
+        
+        <div class="main-card">
+            <h2>Objetivos SMART:</h2>
+            
+            <div class="objetivo">
+                <h3>Objetivo SMART 1</h3>
+                <p>Alcanzar 150 seguidores en instagram y al menos 100 seguidores en facebook para finales de noviembre de 2024, mediante la publicación de contenido mensual y la interacción activa con la comunidad. Basado en publicidad orgánica.</p>
+                <p class="desarrollado">Desarrollado por: Dana Carlon, Yohali Fernández y Michelle Pérez.</p>
+            </div>
+            
+            <div class="objetivo">
+                <h3>Objetivo SMART 2</h3>
+                <p>Evaluar la efectividad de los productos de Technoglass mediante el análisis de cuatro KPIs clave: índice de satisfacción del cliente (CSAT), tasa de participación de ventas, margen sobre el costo de adquisición (Markup), y tasa de conversión, para identificar áreas de mejora en calidad, precio y aceptación de los productos.</p>
+                <p class="desarrollado">Desarrollado por: Jose Blazquez, Andrea Hernandez, Danna García, Ricardo Aguilar.</p>
+            </div>
+            
+            <div class="objetivo">
+                <h3>Objetivo SMART 3</h3>
+                <p>Aumentar el alcance, ventas e impresiones en instagram y facebook en un 20% al implementar el uso de publicidad pagada durante 5 días.</p>
+                <p class="desarrollado">Desarrollado por: Natalia Tirado, Jazmín Quezada, Herik Maldonado.</p>
+            </div>
+            
+            <div class="objetivo">
+                <h3>Objetivo SMART 4</h3>
+                <p>Generar que el 30% del tráfico hacia el sitio web provenga de redes sociales logrando que al menos el 20% de esos usuarios permanezcan en el sitio web durante un mínimo de 1 minuto y manteniendo la tasa de rebote por debajo del 70% para finales de noviembre de 2024.</p>
+                <p class="desarrollado">Desarrollado por: Luis Torres, María Gómez, Carlos Sánchez.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

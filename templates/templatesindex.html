@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <section>
+        <h2>Bienvenido al Dashboard Technoglass</h2>
+        <p>Selecciona un equipo para ver sus KPIs:</p>
+        <div class="teams-grid">
+            <a href="{{ url_for('main.equipo1') }}" class="team-card">Equipo 1</a>
+            <a href="{{ url_for('main.equipo2') }}" class="team-card">Equipo 2</a>
+            <a href="{{ url_for('main.equipo3') }}" class="team-card">Equipo 3</a>
+            <a href="{{ url_for('main.equipo4') }}" class="team-card">Equipo 4</a>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard KPI Equipo 4</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .kpi-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .kpi-column {
+            flex: 1;
+            min-width: 300px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .kpi-title {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .formula {
+            background-color: #e8f4fc;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>Dashboard KPI Equipo 4</h1>
+        </div>
+        
+        <div class="kpi-container">
+            <!-- KPI 1: Tiempo promedio de permanencia por fuente -->
+            <div class="kpi-column" id="kpi1">
+                <h2 class="kpi-title">KPI 1: Tiempo promedio de permanencia por fuente</h2>
+                <div class="formula">
+                    <strong>Fórmula utilizada:</strong><br>
+                    Tiempo promedio de permanencia por fuente = Tiempo total de permanencia desde una fuente / Número total de usuarios de esa fuente
+                </div>
+                <div class="chart-container" id="chart1"></div>
+                <h3>Tabla de Datos Calculados</h3>
+                <div id="kpi1-table"></div>
+                <h3>Explicación de las Variables</h3>
+                <table>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>Tiempo total</td>
+                        <td>Suma de todo el tiempo que los usuarios estuvieron en el sitio desde una fuente.</td>
+                    </tr>
+                    <tr>
+                        <td>Número de usuarios</td>
+                        <td>Número total de personas que llegaron desde esa fuente.</td>
+                    </tr>
+                    <tr>
+                        <td>Tiempo promedio</td>
+                        <td>Promedio del tiempo que cada usuario pasó en el sitio desde esa fuente en segundos.</td>
+                    </tr>
+                </table>
+                <h3>Interpretaciones de los Resultados</h3>
+                <table>
+                    <tr>
+                        <th>Resultado</th>
+                        <th>Interpretación</th>
+                    </tr>
+                    <tr>
+                        <td>> 100 segundos</td>
+                        <td>Los usuarios pasan mucho tiempo aquí, lo que indica contenido interesante.</td>
+                    </tr>
+                    <tr>
+                        <td>&lt; 30 segundos</td>
+                        <td>Los usuarios pasan poco tiempo, tal vez no encuentran lo que buscan.</td>
+                    </tr>
+                    <tr>
+                        <td>Entre 30 y 100 segundos</td>
+                        <td>El tiempo promedio es bueno, los usuarios están interesados.</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- KPI 2: Tasa de tráfico por fuente -->
+            <div class="kpi-column" id="kpi2">
+                <h2 class="kpi-title">KPI 2: Tasa de tráfico por fuente</h2>
+                <div class="formula">
+                    <strong>Fórmula utilizada:</strong><br>
+                    Tasa de tráfico por fuente = (Visitas desde una fuente específica / Total de visitas) * 100
+                </div>
+                <div class="chart-container" id="chart2"></div>
+                <h3>Explicación de las Variables</h3>
+                <table>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>Visitas por fuente</td>
+                        <td>Número de visitas desde una fuente específica.</td>
+                    </tr>
+                    <tr>
+                        <td>Total de visitas</td>
+                        <td>Suma total de visitas al sitio web.</td>
+                    </tr>
+                    <tr>
+                        <td>Tasa de tráfico por fuente</td>
+                        <td>Porcentaje de visitas provenientes de una fuente específica.</td>
+                    </tr>
+                </table>
+                <h3>Interpretaciones de los Resultados</h3>
+                <table>
+                    <tr>
+                        <th>Resultado</th>
+                        <th>Interpretación</th>
+                    </tr>
+                    <tr>
+                        <td>Alta (> 50%)</td>
+                        <td>La mayoría del tráfico proviene de esta fuente.</td>
+                    </tr>
+                    <tr>
+                        <td>Media (20% - 50%)</td>
+                        <td>Fuente relevante, pero no dominante.</td>
+                    </tr>
+                    <tr>
+                        <td>Baja (&lt; 20%)</td>
+                        <td>Fuente con poca contribución al tráfico total.</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- KPI 3: Tasa de Rebote promedio por Fuente -->
+            <div class="kpi-column" id="kpi3">
+                <h2 class="kpi-title">KPI 3: Tasa de Rebote promedio por Fuente</h2>
+                <div class="formula">
+                    <strong>Fórmula utilizada:</strong><br>
+                    Tasa de Rebote promedio por fuente = ∑(Tasa de rebote para una fuente) / número de registros por esa fuente
+                </div>
+                <div class="chart-container" id="chart3"></div>
+                <h3>Explicación de las Variables</h3>
+                <table>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>Tasa de rebote para una fuente</td>
+                        <td>Porcentaje de sesiones donde el usuario abandona sin alguna interacción adicional desde una fuente específica.</td>
+                    </tr>
+                    <tr>
+                        <td>Número de registros por esa fuente</td>
+                        <td>Cantidad de registros (sesiones o eventos) asociados a una fuente de tráfico específica.</td>
+                    </tr>
+                    <tr>
+                        <td>Tasa de Rebote promedio por fuente</td>
+                        <td>Promedio de las tasas de rebote calculadas a partir de las tasas individuales por fuente.</td>
+                    </tr>
+                </table>
+                <h3>Interpretaciones de los Resultados</h3>
+                <table>
+                    <tr>
+                        <th>Resultado</th>
+                        <th>Interpretación</th>
+                    </tr>
+                    <tr>
+                        <td>Alta (> 70%)</td>
+                        <td>Alta tasa de rebote, los usuarios abandonan rápidamente el sitio.</td>
+                    </tr>
+                    <tr>
+                        <td>Media (40% - 70%)</td>
+                        <td>Tasa moderada, podría requerir ajustes menores para que el usuario se mantenga en la página.</td>
+                    </tr>
+                    <tr>
+                        <td>Baja (&lt; 40%)</td>
+                        <td>Buena retención, los usuarios interactúan más con el sitio.</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Embedded CSV data
+        const csvData = `fecha,fuente de trafico,vistas de pagina,sesiones del sitio,visitantes Unicos,tasa de rebote,duracion prom. de la sesion en segundos
+24/10/2024,Directa,2,1,1,100%,3
+22/10/2024,Directa,2,1,1,100%,3
+10/8/2024,Instagram,8,6,6,67%,4.5
+11/4/2024,Directa,3,2,2,50%,5
+21/10/2024,Facebook,3,2,2,50%,5
+11/7/2024,Instagram,2,1,1,0%,5
+16/9/2024,Directa,16,13,11,77%,6.333
+10/10/2024,Facebook,2,1,1,0%,8
+11/8/2024,Google,3,1,1,0%,9
+10/6/2024,Facebook,4,3,3,67%,9
+31/10/2024,Directa,2,1,1,0%,10
+10/2/2024,Directa,5,2,1,50%,10
+10/9/2024,Facebook,3,1,1,0%,11
+14/9/2024,Directa,4,3,3,67%,12
+10/2/2024,Instagram,2,1,1,0%,14
+16/10/2024,Instagram,2,1,1,0%,14
+11/6/2024,Directa,4,2,2,0%,16
+10/1/2024,Linktree,2,1,1,0%,17
+15/9/2024,Instagram,2,1,1,0%,19
+9/12/2024,Directa,10,8,8,88%,20
+23/9/2024,Directa,4,3,3,67%,20
+9/12/2024,Instagram,2,1,1,0%,21
+13/10/2024,Directa,9,2,2,0%,21.5
+10/7/2024,Directa,11,8,8,88%,25
+25/9/2024,Google,4,1,1,0%,26
+10/7/2024,Facebook,4,1,1,0%,27
+10/1/2024,Directa,7,4,4,50%,27.5
+10/10/2024,Directa,4,3,2,67%,28
+18/10/2024,Directa,5,1,1,0%,28
+14/10/2024,Directa,5,2,1,50%,28
+9/12/2024,Google,2,1,1,0%,30
+16/10/2024,Directa,5,1,1,0%,34
+9/9/2024,Instagram,28,18,15,67%,36.16
+9/11/2024,Instagram,11,6,6,33%,37.25
+23/10/2024,Directa,3,1,1,0%,38
+9/11/2024,Directa,10,7,6,86%,40
+23/9/2024,Instagram,4,2,2,0%,40.5
+10/3/2024,Directa,10,5,3,80%,42
+10/5/2024,Facebook,3,1,1,0%,45
+10/8/2024,Directa,3,2,2,50%,47
+16/9/2024,Facebook,14,2,1,0%,47
+18/9/2024,Directa,3,1,1,0%,49
+19/9/2024,TikTok,3,1,1,0%,50
+10/7/2024,Linktree,3,1,1,0%,53
+11/7/2024,Directa,3,2,2,50%,55
+9/11/2024,Facebook,10,6,6,33%,59.75
+30/8/2024,Directa,3,1,1,0%,65
+23/10/2024,Facebook,7,1,1,0%,72
+9/9/2024,Facebook,16,7,7,29%,73
+10/6/2024,Directa,3,2,2,50%,74
+18/10/2024,Instagram,5,1,1,0%,77
+10/6/2024,Instagram,4,2,2,50%,84
+10/12/2024,Facebook,4,1,1,0%,85
+20/10/2024,Instagram,5,1,1,0%,125
+13/9/2024,Directa,56,37,28,78%,163
+18/9/2024,Linktree,7,2,1,50%,223
+11/9/2024,Directa,4,1,1,0%,301
+9/8/2024,Directa,3,2,2,50%,331
+10/3/2024,Google,2,1,1,0%,336
+9/10/2024,Google,7,1,1,0%,382
+9/9/2024,Directa,61,18,17,72%,421
+24/9/2024,Instagram,3,1,1,0%,478
+11/3/2024,Directa,2,1,1,0%,489
+9/8/2024,Facebook,7,1,1,0%,590
+9/10/2024,Instagram,18,5,3,40%,620
+9/6/2024,Directa,4,1,1,0%,635
+21/10/2024,Directa,11,4,2,25%,658
+11/8/2024,Directa,20,3,3,67%,687
+26/10/2024,Directa,1,1,1,0%,837
+25/10/2024,Directa,1,1,1,0%,837
+11/10/2024,Directa,21,4,2,25%,854
+9/11/2024,Google,29,4,1,25%,1427
+13/9/2024,Google,11,6,4,67%,1889
+25/9/2024,Directa,8,1,1,0%,3386
+19/9/2024,Directa,2,2,2,100%,0
+18/9/2024,Facebook,1,1,1,100%,0
+10/3/2024,Instagram,1,1,1,100%,0
+16/9/2024,Instagram,1,1,1,100%,0
+24/10/2024,Instagram,1,1,1,100%,0
+29/10/2024,Directa,1,1,1,100%,0
+14/9/2024,Instagram,2,2,2,100%,0
+28/10/2024,Directa,1,1,1,100%,0
+17/10/2024,Google,1,1,1,100%,0
+11/10/2024,Google,1,1,1,100%,0
+16/9/2024,Linktree,1,1,1,100%,0
+13/9/2024,Instagram,2,2,2,100%,0
+10/8/2024,Google,1,1,1,100%,0
+11/8/2024,Bing,5,5,5,100%,0
+25/9/2024,Instagram,1,1,1,100%,0
+9/4/2024,Directa,1,1,1,100%,0
+27/10/2024,Directa,2,2,2,100%,0
+9/10/2024,Facebook,1,1,1,100%,0
+10/6/2024,Google,1,1,1,100%,0
+24/10/2024,Google,1,1,1,100%,0
+16/9/2024,Google,1,1,1,100%,0
+17/9/2024,Instagram,1,1,1,100%,0
+19/10/2024,Google,1,1,1,100%,0
+17/9/2024,Google,1,1,1,100%,0
+10/1/2024,Instagram,1,1,1,100%,0
+30/10/2024,Directa,1,1,1,100%,0
+9/9/2024,Bing,2,2,2,100%,0
+17/9/2024,Directa,1,1,1,100%,0
+10/5/2024,Directa,1,1,1,100%,0
+11/11/2024,Directa,1,1,1,100%,0
+22/9/2024,Directa,1,1,1,100%,0
+30/10/2024,Instagram,1,1,1,100%,0
+24/9/2024,Directa,2,2,2,100%,0
+17/9/2024,Linktree,1,1,1,100%,0
+15/9/2024,Directa,1,1,1,100%,0
+9/10/2024,Directa,3,3,3,100%,0
+10/1/2024,Facebook,1,1,1,100%,0
+27/10/2024,Instagram,1,1,1,100%,0
+17/10/2024,Directa,1,1,1,100%,0`;
+
+        // Parse CSV data
+        const parsedData = Papa.parse(csvData, {header: true}).data;
+        
+        // Clean and prepare data
+        const cleanData = parsedData.map(row => {
+            return {
+                fecha: row.fecha,
+                fuente: row['fuente de trafico'],
+                vistas: parseInt(row['vistas de pagina']),
+                sesiones: parseInt(row['sesiones del sitio']),
+                visitantes: parseInt(row['visitantes Unicos']),
+                rebote: parseFloat(row['tasa de rebote'].replace('%', '')),
+                duracion: parseFloat(row['duracion prom. de la sesion en segundos'])
+            };
+        }).filter(row => !isNaN(row.sesiones) && !isNaN(row.duracion) && !isNaN(row.rebote));
+
+        // KPI 1: Tiempo promedio de permanencia por fuente
+        function calculateKPI1() {
+            // Group by source and calculate metrics
+            const groupedData = {};
+            
+            cleanData.forEach(row => {
+                if (!groupedData[row.fuente]) {
+                    groupedData[row.fuente] = {
+                        tiempoTotal: 0,
+                        sesiones: 0
+                    };
+                }
+                groupedData[row.fuente].tiempoTotal += row.duracion * row.sesiones;
+                groupedData[row.fuente].sesiones += row.sesiones;
+            });
+            
+            // Calculate average time per source
+            const kpiData = [];
+            for (const fuente in groupedData) {
+                const tiempoPromedio = groupedData[fuente].tiempoTotal / groupedData[fuente].sesiones;
+                kpiData.push({
+                    fuente,
+                    tiempoTotal: groupedData[fuente].tiempoTotal,
+                    sesiones: groupedData[fuente].sesiones,
+                    tiempoPromedio
+                });
+            }
+            
+            // Sort by average time
+            kpiData.sort((a, b) => b.tiempoPromedio - a.tiempoPromedio);
+            
+            return kpiData;
+        }
+        
+        // KPI 2: Tasa de tráfico por fuente
+        function calculateKPI2() {
+            // Calculate total visits
+            const totalVisitas = cleanData.reduce((sum, row) => sum + row.sesiones, 0);
+            
+            // Group by source and calculate visits
+            const groupedData = {};
+            
+            cleanData.forEach(row => {
+                if (!groupedData[row.fuente]) {
+                    groupedData[row.fuente] = 0;
+                }
+                groupedData[row.fuente] += row.sesiones;
+            });
+            
+            // Calculate traffic rate per source
+            const kpiData = [];
+            for (const fuente in groupedData) {
+                const tasaTrafico = (groupedData[fuente] / totalVisitas) * 100;
+                kpiData.push({
+                    fuente,
+                    visitas: groupedData[fuente],
+                    tasaTrafico
+                });
+            }
+            
+            // Sort by traffic rate
+            kpiData.sort((a, b) => b.tasaTrafico - a.tasaTrafico);
+            
+            return kpiData;
+        }
+        
+        // KPI 3: Tasa de Rebote promedio por Fuente
+        function calculateKPI3() {
+            // Group by source and calculate bounce rate
+            const groupedData = {};
+            
+            cleanData.forEach(row => {
+                if (!groupedData[row.fuente]) {
+                    groupedData[row.fuente] = {
+                        totalRebote: 0,
+                        count: 0
+                    };
+                }
+                groupedData[row.fuente].totalRebote += row.rebote;
+                groupedData[row.fuente].count += 1;
+            });
+            
+            // Calculate average bounce rate per source
+            const kpiData = [];
+            for (const fuente in groupedData) {
+                const tasaRebotePromedio = groupedData[fuente].totalRebote / groupedData[fuente].count;
+                kpiData.push({
+                    fuente,
+                    tasaRebotePromedio
+                });
+            }
+            
+            // Sort by bounce rate
+            kpiData.sort((a, b) => b.tasaRebotePromedio - a.tasaRebotePromedio);
+            
+            return kpiData;
+        }
+        
+        // Render KPI 1
+        function renderKPI1() {
+            const kpiData = calculateKPI1();
+            
+            // Create pie chart for KPI 1
+            const pieData = [{
+                values: kpiData.map(item => item.tiempoTotal),
+                labels: kpiData.map(item => item.fuente),
+                type: 'pie',
+                textinfo: 'percent',
+                hoverinfo: 'label+value+percent',
+                textposition: 'inside',
+                marker: {
+                    colors: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', 
+                            '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+                }
+            }];
+            
+            const pieLayout = {
+                title: 'Distribución del Tiempo Total por Fuente',
+                height: 300,
+                margin: {t: 40, b: 20, l: 20, r: 20}
+            };
+            
+            Plotly.newPlot('chart1', pieData, pieLayout);
+            
+            // Create table for KPI 1
+            const tableHtml = `
+                <table>
+                    <tr>
+                        <th>Fuente de Tráfico</th>
+                        <th>Tiempo Total (s)</th>
+                        <th>Sesiones</th>
+                        <th>Tiempo Promedio (s)</th>
+                    </tr>
+                    ${kpiData.map(item => `
+                        <tr>
+                            <td>${item.fuente}</td>
+                            <td>${item.tiempoTotal.toFixed(2)}</td>
+                            <td>${item.sesiones}</td>
+                            <td>${item.tiempoPromedio.toFixed(2)}</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            `;
+            
+            document.getElementById('kpi1-table').innerHTML = tableHtml;
+        }
+        
+        // Render KPI 2
+        function renderKPI2() {
+            const kpiData = calculateKPI2();
+            
+            // Create bar chart for KPI 2
+            const barData = [{
+                x: kpiData.map(item => item.fuente),
+                y: kpiData.map(item => item.tasaTrafico),
+                type: 'bar',
+                marker: {
+                    color: 'skyblue'
+                }
+            }];
+            
+            const barLayout = {
+                title: 'Tasa de Tráfico por Fuente (%)',
+                xaxis: {
+                    title: 'Fuente de Tráfico',
+                    tickangle: -45
+                },
+                yaxis: {
+                    title: 'Tasa de Tráfico (%)'
+                },
+                height: 300,
+                margin: {t: 40, b: 100, l: 60, r: 20}
+            };
+            
+            Plotly.newPlot('chart2', barData, barLayout);
+        }
+        
+        // Render KPI 3
+        function renderKPI3() {
+            const kpiData = calculateKPI3();
+            
+            // Create bar chart for KPI 3
+            const barData = [{
+                x: kpiData.map(item => item.fuente),
+                y: kpiData.map(item => item.tasaRebotePromedio),
+                type: 'bar',
+                marker: {
+                    color: 'green'
+                }
+            }];
+            
+            const barLayout = {
+                title: 'Tasa de Rebote por Fuente de Tráfico (%)',
+                xaxis: {
+                    title: 'Fuente de Tráfico',
+                    tickangle: -45
+                },
+                yaxis: {
+                    title: 'Tasa de Rebote (%)'
+                },
+                height: 300,
+                margin: {t: 40, b: 100, l: 60, r: 20}
+            };
+            
+            Plotly.newPlot('chart3', barData, barLayout);
+        }
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            renderKPI1();
+            renderKPI2();
+            renderKPI3();
+        });
+    </script>
+</body>
+</html>
